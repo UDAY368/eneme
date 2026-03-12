@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Yellow scrollbars - vertical and horizontal */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #EAB308 rgba(255, 255, 255, 0.08);
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+*::-webkit-scrollbar-thumb {
+  background: #EAB308;
+  border-radius: 5px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #FACC15;
+}
+
+@layer base {
+  :root {
+    --background: 15 23 42;
+    --foreground: 248 250 252;
+    --primary: 15 23 42;
+    --secondary: 30 41 59;
+    --accent: 59 130 246;
+    --muted: 100 116 139;
+  }
+  body {
+    @apply bg-eneme-primary text-eneme-foreground;
+  }
+}
+
+/* React Quill overrides for cinema/dark theme */
+.ql-toolbar.ql-snow {
+  @apply border-[rgba(255,255,255,0.08)] bg-[#0A0A0A];
+}
+.ql-container.ql-snow {
+  @apply border-[rgba(255,255,255,0.08)] bg-[#0A0A0A] text-[#FFFFFF];
+}
+.ql-editor {
+  @apply min-h-[200px] text-[#BFBFBF];
+}
+.ql-snow .ql-stroke {
+  stroke: rgba(255,255,255,0.2);
+}
+.ql-snow .ql-fill {
+  fill: rgba(255,255,255,0.4);
+}
+.ql-snow .ql-picker {
+  color: #BFBFBF;
+}
+
+.blog-preview-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.blog-preview-content p {
+  margin-bottom: 1rem;
+}
+.blog-preview-content p:last-child {
+  margin-bottom: 0;
+}

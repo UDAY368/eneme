@@ -1,0 +1,111 @@
+// ENEME Database Schema - PostgreSQL (Railway)
+// Professional database design for production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_PUBLIC_URL")
+}
+
+// ==================== AUTHENTICATION ====================
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ==================== ANALYTICS & LEADS ====================
+model Visit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("visits")
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  projectType String?
+  message     String?
+  reviewed    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("leads")
+}
+
+// ==================== PORTFOLIO CMS ====================
+model PortfolioCategory {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subCategories PortfolioSubCategory[]
+  portfolios    Portfolio[]
+
+  @@map("portfolio_categories")
+}
+
+model PortfolioSubCategory {
+  id         String   @id @default(cuid())
+  categoryId String
+  name       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category   PortfolioCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  portfolios Portfolio[]
+
+  @@unique([categoryId, name])
+  @@map("portfolio_sub_categories")
+}
+
+model Portfolio {
+  id             String   @id @default(cuid())
+  categoryId     String
+  subCategoryId  String
+  imageUrl       String?
+  videoUrl       String?
+  year           String?
+  heading        String
+  description    String?
+  company        String?
+  chips          String[] @default([]) // Array of chip strings
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category    PortfolioCategory    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategory PortfolioSubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+
+  @@map("portfolios")
+}
+
+// ==================== BLOG CMS ====================
+model Blog {
+  id              String   @id @default(cuid())
+  chipTitle       String?
+  blogTitle       String
+  blogDescription String?
+  date            DateTime
+  timeToRead      String?  // e.g., "5 min read"
+  imageUrl        String?
+  content         String   @db.Text // Rich text HTML content
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([date])
+  @@map("blogs")
+}

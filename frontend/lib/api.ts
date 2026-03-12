@@ -1,6 +1,8 @@
 function getApiBaseUrl(): string {
-  const url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim();
-  return url.replace(/\/+$/, '') || 'http://localhost:4000/api';
+  let url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim();
+  url = url.replace(/\/+$/, '') || 'http://localhost:4000';
+  if (!url.endsWith('/api')) url = `${url}/api`;
+  return url;
 }
 const API_URL = getApiBaseUrl();
 

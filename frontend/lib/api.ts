@@ -1,8 +1,17 @@
+const PRODUCTION_API = 'https://eneme-production.up.railway.app/api';
+
 function getApiBaseUrl(): string {
-  const url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim();
-  return url.replace(/\/+$/, '') || 'http://localhost:4000/api';
+  let url = (process.env.NEXT_PUBLIC_API_URL || '').trim();
+  if (!url) {
+    if (typeof window !== 'undefined' && !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(window.location.origin)) {
+      return PRODUCTION_API;
+    }
+    url = 'http://localhost:4000';
+  }
+  url = url.replace(/\/+$/, '') || 'http://localhost:4000';
+  if (!url.endsWith('/api')) url = `${url}/api`;
+  return url;
 }
-const API_URL = getApiBaseUrl();
 
 export function sanitizeVideoUrl(url: string): string {
   if (!url?.trim()) return url;
@@ -35,7 +44,8 @@ export async function api<T>(
     if (token) headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...fetchOptions, headers });
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}${path}`, { ...fetchOptions, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     const message = err.error || `API error: ${res.status}`;

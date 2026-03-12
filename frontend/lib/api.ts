@@ -1,4 +1,8 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+function getApiBaseUrl(): string {
+  const url = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim();
+  return url.replace(/\/+$/, '') || 'http://localhost:4000/api';
+}
+const API_URL = getApiBaseUrl();
 
 export function sanitizeVideoUrl(url: string): string {
   if (!url?.trim()) return url;

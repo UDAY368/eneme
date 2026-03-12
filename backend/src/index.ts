@@ -11,19 +11,22 @@ import blogRoutes from './routes/blog';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const isDev = process.env.NODE_ENV !== 'production';
 
-// Build allowed origins: env (comma-separated) + localhost in dev
+// Build allowed origins: env (comma-separated) + localhost for local frontend dev
 const envOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
-const devOrigins = isDev
-  ? ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:3001', 'http://127.0.0.1:3001']
-  : [];
-const allowedOrigins = [...new Set([...envOrigins, ...devOrigins])].length
-  ? [...new Set([...envOrigins, ...devOrigins])]
-  : ['http://localhost:3000'];
+const localhostOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001',
+];
+const allowedOrigins =
+  envOrigins.length > 0
+    ? [...new Set([...envOrigins, ...localhostOrigins])]
+    : localhostOrigins;
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, cb) => {

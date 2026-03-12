@@ -12,11 +12,10 @@ import blogRoutes from './routes/blog';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Build allowed origins: FRONTEND_URL + CORS_ORIGIN (comma-separated) + localhost
-const frontendUrl = (process.env.FRONTEND_URL || '').trim().replace(/\/+$/, '');
+// Build allowed origins: env (comma-separated) + localhost for local frontend dev
 const envOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
-  .map((o) => o.trim().replace(/\/+$/, ''))
+  .map((o) => o.trim())
   .filter(Boolean);
 const localhostOrigins = [
   'http://localhost:3000',
@@ -24,13 +23,10 @@ const localhostOrigins = [
   'http://localhost:3001',
   'http://127.0.0.1:3001',
 ];
-const allowedOrigins = [
-  ...new Set([
-    ...(frontendUrl ? [frontendUrl] : []),
-    ...envOrigins,
-    ...localhostOrigins,
-  ]),
-];
+const allowedOrigins =
+  envOrigins.length > 0
+    ? [...new Set([...envOrigins, ...localhostOrigins])]
+    : localhostOrigins;
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, cb) => {

@@ -18,13 +18,13 @@ let portfolioCache:
 // Blog cache
 let blogCache: { blogs: unknown[]; ts: number } | null = null;
 
-function isFresh<T>(entry: { ts: number } | null): entry is T {
+function isFresh(entry: { ts: number } | null): entry is { ts: number } {
   return entry !== null && Date.now() - entry.ts < TTL_MS;
 }
 
 export const prefetchCache = {
   getPortfolio() {
-    if (isFresh<NonNullable<typeof portfolioCache>>(portfolioCache)) {
+    if (portfolioCache !== null && isFresh(portfolioCache)) {
       return portfolioCache;
     }
     return null;
@@ -35,7 +35,7 @@ export const prefetchCache = {
   },
 
   getBlog() {
-    if (isFresh<NonNullable<typeof blogCache>>(blogCache)) {
+    if (blogCache !== null && isFresh(blogCache)) {
       return blogCache;
     }
     return null;
